@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String     @id @default(uuid())
+  email         String     @unique
+  password      String
+  lastLogin     String     @default("")
+  loginLocation String     @default("")
+  Profiles      Profiles[]
+}
+
+model Profiles {
+  id     String @id @default(uuid())
+  name   String @unique
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "Profiles_userId_fkey")
+}
+
+model Brand {
+  id       String    @id @default(uuid())
+  name     String
+  fileId   String
+  IsActive Boolean   @default(true)
+  files    Files     @relation(fields: [fileId], references: [id])
+  Product  Product[]
+
+  @@index([fileId], map: "Brand_fileId_fkey")
+}
+
+model Files {
+  id           String         @id @default(uuid())
+  name         String
+  size         String         @default("")
+  ext          String         @default("")
+  destination  String         @default("")
+  Brand        Brand[]
+  Category     Category[]
+  ProductFiles ProductFiles[]
+  SubCategory  SubCategory[]
+}
+
+model Category {
+  id          String        @id @default(uuid())
+  name        String
+  description String        @default("")
+  fileId      String
+  file        Files         @relation(fields: [fileId], references: [id])
+  SubCategory SubCategory[]
+
+  @@index([fileId], map: "Category_fileId_fkey")
+}
+
+model SubCategory {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  fileId      String
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  file        Files     @relation(fields: [fileId], references: [id])
+  Product     Product[]
+
+  @@index([categoryId], map: "SubCategory_categoryId_fkey")
+  @@index([fileId], map: "SubCategory_fileId_fkey")
+}
+
+model Tag {
+  id   String @id @default(uuid())
+  name String
+  link String @default("")
+}
+
+model Product {
+  id             String         @id @default(uuid())
+  name           String         @default("")
+  part_no        String         @default("")
+  description    String         @default("")
+  Quantity       Int            @default(0)
+  brand_id       String
+  subCategory_id String
+  brand          Brand          @relation(fields: [brand_id], references: [id])
+  subCategory    SubCategory    @relation(fields: [subCategory_id], references: [id])
+  ProductFiles   ProductFiles[]
+  ProductGroup   ProductGroup[]
+  QouteProduct   QouteProduct[]
+
+  @@index([brand_id], map: "Product_brand_id_fkey")
+  @@index([subCategory_id], map: "Product_subCategory_id_fkey")
+}
+
+model ProductFiles {
+  id         String  @id @default(uuid())
+  product_id String
+  file_id    String
+  file       Files   @relation(fields: [file_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id])
+
+  @@index([file_id], map: "ProductFiles_file_id_fkey")
+  @@index([product_id], map: "ProductFiles_product_id_fkey")
+}
+
+model Group {
+  id           String         @id @default(uuid())
+  name         String
+  ProductGroup ProductGroup[]
+}
+
+model ProductGroup {
+  id         String  @id @default(uuid())
+  group_id   String
+  product_id String
+  group      Group   @relation(fields: [group_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id])
+
+  @@index([group_id], map: "ProductGroup_group_id_fkey")
+  @@index([product_id], map: "ProductGroup_product_id_fkey")
+}
+
+model Qoute {
+  id           String         @id @default(uuid())
+  name         String
+  email        String
+  phone        String
+  message      String
+  QouteProduct QouteProduct[]
+}
+
+model QouteProduct {
+  id         String  @id @default(uuid())
+  qoute_id   String
+  product_id String
+  product    Product @relation(fields: [product_id], references: [id])
+  qoute      Qoute   @relation(fields: [qoute_id], references: [id])
+
+  @@index([product_id], map: "QouteProduct_product_id_fkey")
+  @@index([qoute_id], map: "QouteProduct_qoute_id_fkey")
+}

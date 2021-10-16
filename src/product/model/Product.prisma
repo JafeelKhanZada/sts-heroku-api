@@ -1,0 +1,51 @@
+model Product {
+    id             String         @id @default(uuid())
+    name           String         @default("")
+    part_no        String         @default("")
+    description    String         @default("")
+    Quantity       Int            @default(0)
+    ProductFiles   ProductFiles[]
+    brand          Brand          @relation(fields: [brand_id], references: [id])
+    brand_id       String
+    subCategory    SubCategory    @relation(fields: [subCategory_id], references: [id])
+    subCategory_id String
+    ProductGroup   ProductGroup[]
+}
+
+model Files {
+    id           String         @id @default(uuid())
+    ProductFiles ProductFiles[]
+}
+
+model ProductFiles {
+    id         String  @id @default(uuid())
+    product    Product @relation(fields: [product_id], references: [id])
+    product_id String
+    file       Files   @relation(fields: [file_id], references: [id])
+    file_id    String
+}
+
+model Brand {
+    id String @id @default(uuid())
+
+    Product Product[]
+}
+
+model SubCategory {
+    id String @id @default(uuid())
+
+    Product Product[]
+}
+
+model Group {
+    id           String         @id @default(uuid())
+    ProductGroup ProductGroup[]
+}
+
+model ProductGroup {
+    id         String  @id @default(uuid())
+    group      Group   @relation(fields: [group_id], references: [id])
+    group_id   String
+    product    Product @relation(fields: [product_id], references: [id])
+    product_id String
+}

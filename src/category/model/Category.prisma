@@ -1,0 +1,13 @@
+model Category {
+    id          String @id @default(uuid())
+    name        String
+    description String @default("")
+    file        Files  @relation(fields: [fileId], references: [id])
+    fileId      String
+}
+
+model Files {
+    id String @id @default(uuid())
+
+    Category Category[]
+}

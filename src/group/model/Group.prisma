@@ -1,0 +1,4 @@
+model Group {
+    id   String @id @default(uuid())
+    name String
+}

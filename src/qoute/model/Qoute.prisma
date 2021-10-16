@@ -1,0 +1,21 @@
+model Qoute {
+    id           String         @id @default(uuid())
+    name         String
+    email        String
+    phone        String
+    message      String
+    QouteProduct QouteProduct[]
+}
+
+model Product {
+    id           String         @id @default(uuid())
+    QouteProduct QouteProduct[]
+}
+
+model QouteProduct {
+    id         String  @id @default(uuid())
+    qoute      Qoute   @relation(fields: [qoute_id], references: [id])
+    qoute_id   String
+    product_id String
+    product    Product @relation(fields: [product_id], references: [id])
+}

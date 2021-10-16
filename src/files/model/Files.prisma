@@ -1,0 +1,8 @@
+model Files {
+    id          String @id @default(uuid())
+    name        String
+    size        String @default("")
+    ext         String @default("")
+    destination String @default("")
+
+}

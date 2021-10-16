@@ -1,0 +1,21 @@
+model SubCategory {
+    id          String   @id @default(uuid())
+    name        String
+    description String
+    file        Files    @relation(fields: [fileId], references: [id])
+    fileId      String
+    category    Category @relation(fields: [categoryId], references: [id])
+    categoryId  String
+}
+
+model Files {
+    id String @id @default(uuid())
+
+    SubCategory SubCategory[]
+}
+
+model Category {
+    id String @id @default(uuid())
+
+    SubCategory SubCategory[]
+}

@@ -1,0 +1,13 @@
+model Brand {
+    id       String  @id @default(uuid())
+    name     String
+    files    Files   @relation(fields: [fileId], references: [id])
+    fileId   String // relation scalar field (used in the `@relation` attribute above)
+    IsActive Boolean @default(true)
+}
+
+model Files {
+    id String @id @default(uuid())
+
+    Brand Brand[]
+}

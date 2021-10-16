@@ -1,0 +1,20 @@
+{
+  "mixers": [
+    {
+      "input": [
+        "prisma/base.prisma",
+        "src/user/model/User.prisma",
+        "src/profiles/model/Profiles.prisma",
+        "src/brand/model/Brand.prisma",
+        "src/files/model/Files.prisma",
+        "src/category/model/Category.prisma",
+        "src/sub-category/model/SubCategory.prisma",
+        "src/tag/model/Tag.prisma",
+        "src/product/model/Product.prisma",
+        "src/group/model/Group.prisma",
+        "src/qoute/model/Qoute.prisma"
+      ],
+      "output": "prisma/schema.prisma"
+    }
+  ]
+}
