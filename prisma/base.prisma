@@ -3,7 +3,7 @@
 
 datasource db {
     provider = "mysql"
-    url      = env("DATABASE_URL")
+    url      = env("mysql://admin:JAFeel20..@database-1.c5c73jplcbfu.us-east-1.rds.amazonaws.com:3306/test_db?schema=public")
 }
 
 generator client {
