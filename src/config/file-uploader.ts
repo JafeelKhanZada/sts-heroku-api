@@ -18,15 +18,7 @@ export const editFileName = (req, file, callback) => {
     .join('');
   callback(null, `${name}-${randomName}${fileExtName}`);
 };
-export const uploadInterceptor = () =>
-  FileInterceptor('file', {
-    dest: './assets',
-    storage: diskStorage({
-      destination: './assets',
-      filename: editFileName,
-    }),
-    fileFilter: imageFileFilter,
-  });
+export const uploadInterceptor = () => FileInterceptor('file');
 export const uploadInterceptorMultiple = () =>
   FileInterceptor('files[]', {
     dest: './assets',

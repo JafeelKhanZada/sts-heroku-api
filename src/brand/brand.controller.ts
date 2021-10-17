@@ -26,6 +26,7 @@ export class BrandController {
     @Response() _res,
     @Body() body,
   ) {
+    console.log('file', file);
     return this.brandService.makeBrand(body, file).then(res => {
       return _res
         .status(200)

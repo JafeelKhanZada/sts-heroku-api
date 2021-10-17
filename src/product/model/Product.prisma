@@ -9,7 +9,15 @@ model Product {
     brand_id       String
     subCategory    SubCategory    @relation(fields: [subCategory_id], references: [id])
     subCategory_id String
+    category       Category       @relation(fields: [category_id], references: [id])
+    category_id    String
     ProductGroup   ProductGroup[]
+}
+
+model Category {
+    id String @id @default(uuid())
+
+    Product Product[]
 }
 
 model Files {

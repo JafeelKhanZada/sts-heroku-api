@@ -1,4 +1,4 @@
-import { Body, Injectable } from '@nestjs/common';
+import { BadRequestException, Body, Injectable } from '@nestjs/common';
 import { FilesService } from 'src/files/files.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -9,15 +9,23 @@ export class BrandService {
     private readonly fileService: FilesService,
   ) {}
   makeBrand(body: any, file: any) {
-    return this.fileService.uploadFile(file).then(res => {
-      console.log('res', res);
-      return this.prismaService.brand.create({
-        data: {
-          name: body?.name,
-          fileId: res.id,
-        },
+    return this.fileService
+      .uploadFile(file)
+      .then(res => {
+        return this.prismaService.brand
+          .create({
+            data: {
+              name: body?.name,
+              fileId: res.id,
+            },
+          })
+          .catch(e => {
+            throw new BadRequestException(e.message);
+          });
+      })
+      .catch(e => {
+        throw new BadRequestException(e.message);
       });
-    });
   }
   getBrands(query: any) {
     const skip = query?.skip

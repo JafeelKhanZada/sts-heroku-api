@@ -25,6 +25,8 @@ export class CategoryController {
     @Response() _res,
     @Body() body,
   ) {
+    console.log('file', file);
+
     return this.categoryService.createCategory(body, file).then(res => {
       return _res.status(200).json({
         error: false,

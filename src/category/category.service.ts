@@ -45,6 +45,7 @@ export class CategoryService {
         skip,
         include: {
           file: true,
+          Product: true,
         },
       })
       .then(res =>

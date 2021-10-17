@@ -13,9 +13,13 @@ plugins:
   - serverless-dotenv-plugin
 
 package:
+  patterns:
+    - '!node_modules/@prisma/client/libquery_engine-*'
+    - 'node_modules/@prisma/client/libquery_engine-rhel-*'
   exclude:
     - src/**
     - test/**
+    - 'node_modules/@prisma/client/runtime'
 
 functions:
   api:

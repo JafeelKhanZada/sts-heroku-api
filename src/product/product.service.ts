@@ -33,20 +33,74 @@ export class ProductService {
       : 0;
     const take = query?.take ? parseInt(query?.take) : 10;
     const search = query?.search || '';
-    console.log('query?.category', query?.category);
+    let filters: any = {
+      OR: [],
+    };
+    if (query?.category) {
+      filters.OR.push({
+        category_id: {
+          equals: query?.category,
+        },
+      });
+    }
+    if (query?.brand) {
+      filters.OR.push({
+        brand_id: {
+          equals: query?.brand,
+        },
+      });
+    }
+    if (query?.subCategory) {
+      filters.OR.push({
+        subCategory_id: {
+          equals: query?.subCategory,
+        },
+      });
+    }
+    filters = {
+      OR: [
+        ...filters.OR,
+        {
+          name: {
+            contains: search,
+          },
+        },
+        {
+          part_no: {
+            contains: search,
+          },
+        },
+        {
+          description: {
+            contains: search,
+          },
+        },
+        {
+          brand: {
+            name: {
+              contains: search,
+            },
+          },
+        },
+        {
+          category: {
+            name: {
+              contains: search,
+            },
+          },
+        },
+        {
+          subCategory: {
+            name: {
+              contains: search,
+            },
+          },
+        },
+      ],
+    };
     return this.prismaService.product
       .findMany({
-        where: {
-          OR: [
-            {
-              subCategory: {
-                categoryId: {
-                  equals: query?.category,
-                },
-              },
-            },
-          ],
-        },
+        where: filters,
         take,
         skip,
         include: {
