@@ -53,7 +53,7 @@ export class BrandService {
             ...v,
             files: {
               ...v.files,
-              destination: v.files.destination.split('/')[1],
+              destination: v.files.destination,
             },
           })),
         })),

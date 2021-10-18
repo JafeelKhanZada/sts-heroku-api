@@ -2,6 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { S3 } from 'aws-sdk';
 import { Logger } from '@nestjs/common';
+import * as fs from 'fs';
+import * as FileType from 'file-type';
 @Injectable()
 export class FilesService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -27,9 +29,10 @@ export class FilesService {
   }
 
   async uploadFile(file) {
-    const { originalname } = file;
+    const { originalname, path } = file;
+    const buffer = fs.readFileSync(path);
     const bucketS3 = 'nest-test-dev-serverlessdeploymentbucket-6frnxqqx1x2y';
-    return this.uploadS3(file.buffer, bucketS3, originalname)
+    return this.uploadS3(buffer, bucketS3, originalname)
       .then((e: any) => {
         return this.uploadFilePrisma({ ...file, name: e?.Key }, e.Location);
       })
@@ -45,8 +48,6 @@ export class FilesService {
       Key: String(name),
       Body: file,
     };
-    console.log('e', params);
-
     return new Promise((resolve, reject) => {
       return s3.upload(params, (err, data) => {
         if (err) {
@@ -56,7 +57,7 @@ export class FilesService {
         resolve(data);
       });
     }).catch(e => {
-      // throw new BadRequestException(e?.message);
+      throw new BadRequestException(e?.message);
     });
   }
   getS3Image(key: string) {

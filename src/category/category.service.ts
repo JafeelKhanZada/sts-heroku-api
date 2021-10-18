@@ -53,13 +53,14 @@ export class CategoryService {
           count: val,
           data: res.map(v => ({
             ...v,
-            files: {
+            file: {
               ...v.file,
-              destination: v.file.destination.split('/')[1],
+              destination: v.file.destination,
             },
           })),
         })),
-      );
+      )
+      .catch(e => console.log('e', e));
   }
   updateCategory(id: string, body: any) {
     return this.prismaService.category.update({
