@@ -56,4 +56,12 @@ export class ProductController {
         .json({ error: false, message: 'Product Fetched!', data: res });
     });
   }
+  @Post('/listing')
+  getListing(@Body() body, @Res() _res, @Query() query) {
+    return this.productService.getProductForListing(query, body).then(res => {
+      return _res
+        .status(200)
+        .json({ error: false, message: 'Product Fetched!', data: res });
+    });
+  }
 }

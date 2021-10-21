@@ -36,27 +36,6 @@ export class ProductService {
     let filters: any = {
       OR: [],
     };
-    if (query?.category) {
-      filters.OR.push({
-        category_id: {
-          equals: query?.category,
-        },
-      });
-    }
-    if (query?.brand) {
-      filters.OR.push({
-        brand_id: {
-          equals: query?.brand,
-        },
-      });
-    }
-    if (query?.subCategory) {
-      filters.OR.push({
-        subCategory_id: {
-          equals: query?.subCategory,
-        },
-      });
-    }
     filters = {
       OR: [
         ...filters.OR,
@@ -100,9 +79,9 @@ export class ProductService {
     };
     return this.prismaService.product
       .findMany({
-        where: filters,
         take,
         skip,
+        where: filters,
         include: {
           ProductFiles: {
             include: {
@@ -149,5 +128,104 @@ export class ProductService {
         },
       },
     });
+  }
+  getProductForListing(query: any, body: any) {
+    const skip = query?.skip
+      ? parseInt(query?.skip) * parseInt(query?.take)
+      : 0;
+    const take = query?.take ? parseInt(query?.take) : 10;
+    const search = body?.search || '';
+    let filters: any = {
+      OR: [],
+      AND: [],
+    };
+    if (body?.category) {
+      filters.AND.push({
+        category_id: {
+          in: body?.category,
+        },
+      });
+    }
+    if (body?.brand) {
+      filters.AND.push({
+        brand_id: {
+          in: body?.brand,
+        },
+      });
+    }
+    if (body?.subCategory) {
+      filters.AND.push({
+        subCategory_id: {
+          in: body?.subCategory,
+        },
+      });
+    }
+    filters = {
+      AND: filters.AND,
+      OR: [
+        ...filters.OR,
+        {
+          name: {
+            contains: search,
+          },
+        },
+        {
+          part_no: {
+            contains: search,
+          },
+        },
+        {
+          description: {
+            contains: search,
+          },
+        },
+        {
+          brand: {
+            name: {
+              contains: search,
+            },
+          },
+        },
+        {
+          category: {
+            name: {
+              contains: search,
+            },
+          },
+        },
+        {
+          subCategory: {
+            name: {
+              contains: search,
+            },
+          },
+        },
+      ],
+    };
+    return this.prismaService.product
+      .findMany({
+        take,
+        where: filters,
+        skip,
+        include: {
+          ProductFiles: {
+            include: {
+              file: true,
+            },
+          },
+          brand: true,
+          subCategory: {
+            include: {
+              category: true,
+            },
+          },
+        },
+      })
+      .then(res =>
+        this.prismaService.product.count().then(val => ({
+          count: val,
+          data: res,
+        })),
+      );
   }
 }
